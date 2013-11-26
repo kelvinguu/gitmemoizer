@@ -11,6 +11,7 @@ import java.lang.annotation.ElementType;
  *
  * @author Igor Urmincek
  */
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Cacheable {

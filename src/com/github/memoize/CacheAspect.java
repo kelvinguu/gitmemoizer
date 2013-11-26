@@ -34,8 +34,7 @@ public class CacheAspect {
     }
 
     @Around("cache()")
-    public Object aroundCachedMethods(ProceedingJoinPoint thisJoinPoint)
-            throws Throwable {
+    public Object aroundCachedMethods(ProceedingJoinPoint thisJoinPoint) throws Throwable {
         logger.debug("Execution of Cacheable method catched");
 
         // generate the key under which cached value is stored

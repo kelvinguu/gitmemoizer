@@ -1,6 +1,7 @@
 package com.github.memoize;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
 
 /**
  * Sample app that uses AspectJ for caching
@@ -13,6 +14,8 @@ public class App {
     private static Logger logger = Logger.getLogger(App.class);
 
     public static void main(String[] args) {
+        BasicConfigurator.configure();
+
         logger.debug("Starting...");
         Calculator calc = new Calculator();
 
