@@ -1,5 +1,6 @@
 package com.github.memoize;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -29,9 +30,19 @@ public class MemoizeAspect {
     @Around("memoize()")
     public Object aroundMemoizedMethod(ProceedingJoinPoint thisJoinPoint) throws Throwable {
 
-        // generate the key under which cached value is stored
-        // will look like caching.aspectj.Calculator.sum(Integer=1;Integer=2;)
+        // generate unique memoization key
         StringBuilder keyBuff = new StringBuilder();
+
+        //logger.debug(thisJoinPoint.hashCode()); // 1568951206
+        //logger.debug(thisJoinPoint.getSignature()); // int com.github.memoize.Calculator.sum(int, int)
+        //logger.debug(thisJoinPoint.getSourceLocation()); // Calculator.java:10
+        //logger.debug(thisJoinPoint.getStaticPart()); // execution(int com.github.memoize.Calculator.sum(int, int))
+
+        Class targetClass = thisJoinPoint.getTarget().getClass();
+        String className = targetClass.getSimpleName();
+        URL classURL = targetClass.getResource(className + ".class");
+
+        logger.debug(classURL);
 
         // append name of the class
         keyBuff.append(thisJoinPoint.getTarget().getClass().getName());
