@@ -1,14 +1,12 @@
 <project name="memoize" basedir="." default="main">
 
     <!-- DEFINE KEY PROPERTIES -->
+    <!-- ================================================== -->
     <property name="src.dir"     value="src"/>
-
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
-
     <property name="main-class"  value="com.github.memoize.Tester"/>
-
     <property name="lib.dir"     value="lib"/>
 
     <path id="classpath">
@@ -16,38 +14,88 @@
     </path>
 
     <!-- CLEAN -->
+    <!-- ================================================== -->
     <target name="clean">
         <delete dir="${build.dir}"/>
     </target>
 
-    <!-- COMPILE -->
-    <target name="compile">
-        <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    <!-- SETUP ASPECTJ -->
+    <!-- ================================================== -->
+    <target name="aj-variables" description="variables for AspectJ">
+        <!-- build.compiler value to pick up our CompilerAdapter for javac -->
+        <property name="ajc.adapter" value="org.aspectj.tools.ant.taskdefs.Ajc11CompilerAdapter"/>
+
+        <!-- required directories - run from examples or predefine -->
+        <property name="aspectj.lib.dir" location="${basedir}/lib"/>
+
+        <!-- required libraries - install or predefine -->
+        <property name="aspectjrt.jar" location="${aspectj.lib.dir}/aspectjrt.jar"/>
+        <property name="aspectjtools.jar" location="${aspectj.lib.dir}/aspectjtools.jar"/>
+        <property name="aspectjweaver.jar" location="${aspectj.lib.dir}/aspectjweaver.jar"/>
+
+        <!-- TODO: do I need to redefine classes.dir and jars.dir? -->
+        <!-- TODO: do I need to define example.dir? -->
+        <!-- TODO: do I need to define example.package? -->
+
+        <!-- checking required libraries -->
+        <available file="${aspectjtools.jar}" property="aspectjtools.jar.available"/>
+        <available file="${aspectjrt.jar}" property="aspectjrt.jar.available"/>
     </target>
 
-    <!-- CREATE JAR -->
-    <target name="jar" depends="compile">
-        <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
-            <manifest>
-                <attribute name="Main-Class" value="${main-class}"/>
-            </manifest>
-        </jar>
+    <!-- targets to fail unless required libraries available -->
+    <target name="aspectjrt.jar.available" depends="aj-variables"
+        unless="aspectjrt.jar.available" >
+        <fail message="expecting aspectjrt.jar at ${aspectjrt.jar}"/>
     </target>
 
-    <!-- EXECUTE CODE -->
-    <target name="run" depends="jar">
-        <java fork="true" classname="${main-class}">
+    <target name="aspectjtools.jar.available" depends="aj-variables"
+        unless="aspectjtools.jar.available" >
+        <fail message="expecting aspectjtools.jar at ${aspectjtools.jar}"/>
+    </target>
+
+    <target name="aj-taskdefs" depends="aj-variables,
+        aspectjtools.jar.available,
+        aspectjrt.jar.available"
+        unless="aj-taskdefs-done">
+
+        <taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
             <classpath>
-                <path refid="classpath"/>
-                <path location="${jar.dir}/${ant.project.name}.jar"/>
+                <pathelement path="${aspectjtools.jar}"/>
+            </classpath>
+        </taskdef>
+        <property name="aj-taskdefs-done" value="true"/>
+
+    </target>
+
+    <target name="aj-init" depends="aj-variables,aj-taskdefs"/>
+
+    <!-- ============================================================= -->
+    <!-- these targets compile and run any example                     -->
+    <!-- ============================================================= -->
+    <target name="aj-compile" depends="aj-init">
+        <iajc destdir="${classes.dir}">
+            <src location="${src.dir}" />
+            <classpath refid="classpath" />
+            <!-- TODO: check if refid is being used right -->
+            <!-- TODO: do I need aspectpath? -->
+        </iajc>
+    </target>
+
+    <target name="aj-run" depends="aj-compile">
+        <java classname="${class}">
+            <classpath>
+                <pathelement path="${classes.dir}"/>
+                <pathelement path="${aspectjrt.jar}"/>
+                <pathelement refid="classpath"/>
             </classpath>
         </java>
     </target>
 
-    <target name="clean-build" depends="clean,jar"/>
-
-    <target name="main" depends="clean,run"/>
+    <target name="main"
+        description="compile and run using AspectJ compiler">
+        <antcall target="aj-run" />
+            <param name="class" value="${main-class}"/>
+        </antcall>
+    </target>
 
 </project>
