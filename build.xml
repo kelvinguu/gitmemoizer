@@ -69,11 +69,10 @@
 
     <target name="aj-init" depends="aj-variables,aj-taskdefs"/>
 
-    <!-- ============================================================= -->
-    <!-- these targets compile and run any example                     -->
-    <!-- ============================================================= -->
+    <!-- COMPILE AND RUN -->
+    <!-- ================================================== -->
     <target name="aj-compile" depends="aj-init">
-        <iajc destdir="${classes.dir}">
+        <iajc destdir="${classes.dir}" source="1.7" target="1.7">
             <src location="${src.dir}" />
             <classpath refid="classpath" />
             <!-- TODO: check if refid is being used right -->
@@ -86,14 +85,13 @@
             <classpath>
                 <pathelement path="${classes.dir}"/>
                 <pathelement path="${aspectjrt.jar}"/>
-                <pathelement refid="classpath"/>
+                <pathelement path="${lib.dir}"/>
             </classpath>
         </java>
     </target>
 
-    <target name="main"
-        description="compile and run using AspectJ compiler">
-        <antcall target="aj-run" />
+    <target name="main" description="compile and run using AspectJ compiler">
+        <antcall target="aj-run">
             <param name="class" value="${main-class}"/>
         </antcall>
     </target>
