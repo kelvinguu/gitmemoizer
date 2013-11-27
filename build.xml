@@ -75,8 +75,6 @@
         <iajc destdir="${classes.dir}" source="1.7" target="1.7">
             <src location="${src.dir}" />
             <classpath refid="classpath" />
-            <!-- TODO: check if refid is being used right -->
-            <!-- TODO: do I need aspectpath? -->
         </iajc>
     </target>
 
@@ -84,8 +82,7 @@
         <java classname="${class}">
             <classpath>
                 <pathelement path="${classes.dir}"/>
-                <pathelement path="${aspectjrt.jar}"/>
-                <pathelement path="${lib.dir}"/>
+                <path refid="classpath"/>
             </classpath>
         </java>
     </target>
