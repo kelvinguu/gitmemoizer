@@ -13,12 +13,6 @@
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 
-    <!-- CLEAN -->
-    <!-- ================================================== -->
-    <target name="clean">
-        <delete dir="${build.dir}"/>
-    </target>
-
     <!-- SETUP ASPECTJ -->
     <!-- ================================================== -->
     <target name="aj-variables" description="variables for AspectJ">
@@ -32,10 +26,6 @@
         <property name="aspectjrt.jar" location="${aspectj.lib.dir}/aspectjrt.jar"/>
         <property name="aspectjtools.jar" location="${aspectj.lib.dir}/aspectjtools.jar"/>
         <property name="aspectjweaver.jar" location="${aspectj.lib.dir}/aspectjweaver.jar"/>
-
-        <!-- TODO: do I need to redefine classes.dir and jars.dir? -->
-        <!-- TODO: do I need to define example.dir? -->
-        <!-- TODO: do I need to define example.package? -->
 
         <!-- checking required libraries -->
         <available file="${aspectjtools.jar}" property="aspectjtools.jar.available"/>
@@ -69,8 +59,12 @@
 
     <target name="aj-init" depends="aj-variables,aj-taskdefs"/>
 
-    <!-- COMPILE AND RUN -->
+    <!-- CLEAN, COMPILE AND RUN -->
     <!-- ================================================== -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
     <target name="aj-compile" depends="aj-init">
         <iajc destdir="${classes.dir}" source="1.7" target="1.7">
             <src location="${src.dir}" />
