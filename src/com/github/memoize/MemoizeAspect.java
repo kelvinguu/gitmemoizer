@@ -1,6 +1,7 @@
 package com.github.memoize;
 
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -8,6 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.apache.commons.io.IOUtils;
 
 @Aspect
 public class MemoizeAspect {
@@ -27,47 +29,56 @@ public class MemoizeAspect {
     private void memoize() {
     }
 
+    private String getClassFileAsString(ProceedingJoinPoint joinPoint) throws IOException {
+        // TODO: when will this fail?
+        // TODO: not safe to assume UTF-8 encoding
+        // TODO: only return bytecode for method
+        // http://stackoverflow.com/questions/309424/read-convert-an-inputstream-to-a-string
+        Class targetClass = joinPoint.getTarget().getClass();
+        String classFileString = targetClass.getSimpleName() + ".class";
+        return IOUtils.toString(targetClass.getResourceAsStream(classFileString), "UTF-8");
+    }
+
+    private String getKey(ProceedingJoinPoint joinPoint) throws IOException {
+
+        StringBuilder keyBuffer = new StringBuilder();
+
+        String className = joinPoint.getClass().getName();
+        String methodName = joinPoint.getSignature().getName();
+        String codeString = getClassFileAsString(joinPoint);
+
+        keyBuffer.append(className);
+        keyBuffer.append(".").append(methodName);
+        keyBuffer.append("(");
+
+        // loop through cacheable method arguments
+        for (final Object arg : joinPoint.getArgs()) {
+            // append argument type and value
+            String methodType = arg.getClass().getSimpleName();
+            keyBuffer.append(methodType).append("=").append(arg).append(",");
+            // TODO: check that the toString for arg is unique
+        }
+
+        keyBuffer.append(")\n");
+        keyBuffer.append(codeString);
+
+        return keyBuffer.toString();
+    }
     @Around("memoize()")
     public Object aroundMemoizedMethod(ProceedingJoinPoint thisJoinPoint) throws Throwable {
 
         // generate unique memoization key
-        StringBuilder keyBuff = new StringBuilder();
+        String key = getKey(thisJoinPoint);
+        logger.info("KEY: " + key.substring(0,key.indexOf('\n')));
+        // don't print codeString
 
-        //logger.debug(thisJoinPoint.hashCode()); // 1568951206
-        //logger.debug(thisJoinPoint.getSignature()); // int com.github.memoize.Calculator.sum(int, int)
-        //logger.debug(thisJoinPoint.getSourceLocation()); // Calculator.java:10
-        //logger.debug(thisJoinPoint.getStaticPart()); // execution(int com.github.memoize.Calculator.sum(int, int))
-
-        Class targetClass = thisJoinPoint.getTarget().getClass();
-        String className = targetClass.getSimpleName();
-        URL classURL = targetClass.getResource(className + ".class");
-
-        logger.debug(classURL);
-
-        // append name of the class
-        keyBuff.append(thisJoinPoint.getTarget().getClass().getName());
-
-        // append name of the method
-        keyBuff.append(".").append(thisJoinPoint.getSignature().getName());
-
-        keyBuff.append("(");
-        // loop through method arguments
-        for (final Object arg : thisJoinPoint.getArgs()) {
-            // append argument type and value
-            keyBuff.append(arg.getClass().getSimpleName() + "=" + arg + ";");
-        }
-        keyBuff.append(")");
-        String key = keyBuff.toString();
-
-        logger.info("Key = " + key);
         Object result = cache.get(key);
         if (result == null) {
-            logger.info("Result not cached. Calculating...");
             result = thisJoinPoint.proceed();
-            logger.info("Result stored: " + result);
             cache.put(key, result);
+            logger.info("STORED: " + result);
         } else {
-            logger.info("Result reloaded: " + result);
+            logger.info("LOADED: " + result);
         }
 
         return result;
