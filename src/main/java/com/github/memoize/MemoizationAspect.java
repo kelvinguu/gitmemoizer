@@ -1,7 +1,6 @@
 package com.github.memoize;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -12,19 +11,21 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.apache.commons.io.IOUtils;
 
 @Aspect
-public class MemoizeAspect {
+public class MemoizationAspect {
 
-    private Logger logger = Logger.getLogger(MemoizeAspect.class);
+    private Logger logger;
     private Map<String, Object> cache;
 
-    public MemoizeAspect() {
+    // TODO: do we need a constructor?
+    public MemoizationAspect() {
+        logger = Logger.getLogger(MemoizationAspect.class);
         cache = new HashMap<String, Object>();
     }
 
     /**
-     * Pointcut for all methods annotated with <code>@Memoize</code>
+     * Pointcut for all methods annotated with <code>@Memoizable</code>
      */
-    @Pointcut("execution(@Memoize * *.*(..))")
+    @Pointcut("execution(@Memoizable * *.*(..))")
     @SuppressWarnings("unused")
     private void memoize() {
     }
@@ -64,17 +65,18 @@ public class MemoizeAspect {
 
         return keyBuffer.toString();
     }
+
     @Around("memoize()")
-    public Object aroundMemoizedMethod(ProceedingJoinPoint thisJoinPoint) throws Throwable {
+    public Object aroundMemoizedMethod(ProceedingJoinPoint joinPoint) throws Throwable {
 
         // generate unique memoization key
-        String key = getKey(thisJoinPoint);
+        String key = getKey(joinPoint);
         logger.info("KEY: " + key.substring(0,key.indexOf('\n')));
         // don't print codeString
 
         Object result = cache.get(key);
         if (result == null) {
-            result = thisJoinPoint.proceed();
+            result = joinPoint.proceed();
             cache.put(key, result);
             logger.info("STORED: " + result);
         } else {

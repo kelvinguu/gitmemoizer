@@ -6,12 +6,11 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * Methods annotated with <code>@Memoize</code> will be memoized
+ * Methods annotated with <code>@Memoizable</code> will be memoized
  */
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Memoize {
-
+public @interface Memoizable {
 }
 

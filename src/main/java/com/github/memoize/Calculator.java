@@ -6,7 +6,7 @@ public class Calculator {
 
     private Logger logger = Logger.getLogger(Calculator.class);
 
-    @Memoize
+    @Memoizable
     public int sum(int a, int b) {
         logger.info("Calculating " + a + " + " + b);
         try {
