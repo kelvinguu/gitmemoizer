@@ -16,18 +16,9 @@ public class MemoizationAspect {
     private Logger logger;
     private Map<String, Object> cache;
 
-    // TODO: do we need a constructor?
     public MemoizationAspect() {
         logger = Logger.getLogger(MemoizationAspect.class);
         cache = new HashMap<String, Object>();
-    }
-
-    /**
-     * Pointcut for all methods annotated with <code>@Memoizable</code>
-     */
-    @Pointcut("execution(@Memoizable * *.*(..))")
-    @SuppressWarnings("unused")
-    private void memoize() {
     }
 
     private String getClassFileAsString(ProceedingJoinPoint joinPoint) throws IOException {
@@ -66,7 +57,7 @@ public class MemoizationAspect {
         return keyBuffer.toString();
     }
 
-    @Around("memoize()")
+    @Around("@annotation(com.github.memoize.Memoizable)")
     public Object aroundMemoizedMethod(ProceedingJoinPoint joinPoint) throws Throwable {
 
         // generate unique memoization key

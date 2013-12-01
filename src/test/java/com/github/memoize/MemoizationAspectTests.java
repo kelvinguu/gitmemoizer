@@ -19,7 +19,7 @@ public class MemoizationAspectTests {
 
         Method getKeyMethod = MemoizationAspect.class.getDeclaredMethod("getKey", ProceedingJoinPoint.class);
         getKeyMethod.setAccessible(true);
-        getKeyMethod.invoke()
+        //getKeyMethod.invoke();
     }
 
 
