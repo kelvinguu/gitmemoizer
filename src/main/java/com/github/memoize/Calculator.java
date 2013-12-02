@@ -11,7 +11,7 @@ public class Calculator {
         logger.info("Calculating " + a + " + " + b);
         try {
             // pretend this is an expensive operation
-            Thread.sleep(3000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             logger.error("Something went wrong...", e);
         }

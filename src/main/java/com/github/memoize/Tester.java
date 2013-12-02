@@ -1,8 +1,14 @@
 package com.github.memoize;
 
+import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Tester {
 
@@ -12,6 +18,20 @@ public class Tester {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.DEBUG);
         logger.debug("Starting...");
+
+        //List<String> aList = Arrays.asList("one", "two", "three");
+        //List<String> bList = Arrays.asList("one", "two", "three");
+        //
+        //Dummy a = new Dummy(aList);
+        //Dummy b = new Dummy(bList);
+        //
+        //boolean testTransients = true;
+        //boolean same = EqualsBuilder.reflectionEquals(a, b, testTransients);
+        //System.out.println(same);
+        //
+        //System.out.println(HashCodeBuilder.reflectionHashCode(a,testTransients));
+        //System.out.println(HashCodeBuilder.reflectionHashCode(b,testTransients));
+
         Calculator calc = new Calculator();
 
         // result will be calculated and stored in cache
