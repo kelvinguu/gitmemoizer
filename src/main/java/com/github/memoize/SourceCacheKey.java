@@ -1,6 +1,5 @@
 package com.github.memoize;
 
-import org.apache.log4j.Logger;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -10,28 +9,29 @@ import java.util.List;
  * Time: 11:10 PM
  */
 
-public class DefaultCacheKey extends CacheKey {
+public class SourceCacheKey extends CacheKey {
 
     private Method targetMethod;
-    private byte[] methodBytes;
     private List<Object> methodArgs;
+    private String methodSource;
 
-    public DefaultCacheKey(Method targetMethod, List<Object> methodArgs) {
+    public SourceCacheKey(Method targetMethod, List<Object> methodArgs, String methodSource) {
         this.targetMethod = targetMethod;
         this.methodArgs = methodArgs;
-        methodBytes = IntrospectUtils.getMethodBytes(targetMethod);
+        this.methodSource = methodSource;
     }
 
     @Override
     public String toString() {
         // TODO: do something that looks more like .join("\n")
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String signatureString = targetMethod.toString();
 
         sb.append(signatureString).append("\n");
         for (Object arg : methodArgs) {
             sb.append(arg).append("\n");
         }
+        sb.append(methodSource);
         return sb.toString();
     }
 }

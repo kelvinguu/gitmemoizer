@@ -14,6 +14,7 @@
     <orderEntry type="library" name="junit-4.10" level="project" />
     <orderEntry type="library" name="commons-lang3-3.1" level="project" />
     <orderEntry type="library" name="guava-15.0" level="project" />
+    <orderEntry type="library" name="org.eclipse.jgit-3.1.0.201310021548-r" level="project" />
   </component>
 </module>
 

@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * Date: 11/30/13
  * Time: 10:12 PM
  */
-public class IntrospectUtils {
+public class JoinPointUtils {
 
     public static Class getClass(ProceedingJoinPoint joinPoint) {
         return joinPoint.getTarget().getClass();
@@ -22,17 +22,6 @@ public class IntrospectUtils {
         // http://stackoverflow.com/questions/5714411/getting-the-java-lang-reflect-method-from-a-proceedingjoinpoint
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getMethod();
-    }
-
-    public static byte[] getClassBytes(Class targetClass) throws IOException {
-        // TODO: when will this fail?
-        String classFileString = targetClass.getSimpleName() + ".class";
-        return IOUtils.toByteArray(targetClass.getResourceAsStream(classFileString));
-    }
-
-    public static byte[] getMethodBytes(Method targetMethod) {
-        // TODO: only return bytecode for method
-        return null;
     }
 
 }

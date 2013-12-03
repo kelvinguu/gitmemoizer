@@ -1,5 +1,6 @@
 package com.github.memoize;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,21 +9,32 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
-public class DefaultMemoizer implements Memoizer {
+public class GitMemoizer implements Memoizer {
 
     private Logger logger;
     private Map<CacheKey, Object> cache;
+    private RepositoryFacade repo;
 
-    public DefaultMemoizer() {
+    public GitMemoizer(String repoPath) throws IOException {
         logger = Logger.getLogger(this.getClass());
         cache = new HashMap<CacheKey, Object>();
+        repo = new RepositoryFacade(repoPath);
+
+        // TODO: when object is destroyed, call: repo.close();
     }
 
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        Method targetMethod = IntrospectUtils.getMethod(joinPoint);
+        Method targetMethod = JoinPointUtils.getMethod(joinPoint);
         List<Object> methodArgs = Arrays.asList(joinPoint.getArgs());
-        CacheKey key = new DefaultCacheKey(targetMethod, methodArgs);
+        Class targetClass = targetMethod.getDeclaringClass();
+
+        String classSource = repo.getFileAsString(targetClass.getSimpleName() + ".java");
+
+        // TODO: extract method source
+        String methodSource = classSource;
+
+        CacheKey key = new SourceCacheKey(targetMethod, methodArgs, methodSource);
         logger.info("KEY: " + key);
 
         Object result = cache.get(key);
