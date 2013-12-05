@@ -1,4 +1,4 @@
-package com.github.memoize;
+package com.github.memoize.aspect;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

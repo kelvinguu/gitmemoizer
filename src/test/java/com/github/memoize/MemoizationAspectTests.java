@@ -1,5 +1,6 @@
 package com.github.memoize;
 
+import com.github.memoize.aspect.MemoizationAspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.junit.Test;
 

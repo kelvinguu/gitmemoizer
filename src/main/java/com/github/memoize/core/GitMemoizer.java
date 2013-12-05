@@ -1,11 +1,13 @@
-package com.github.memoize;
+package com.github.memoize.core;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.github.memoize.aspect.JoinPointUtils;
+import com.github.memoize.git.GitFacade;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -13,26 +15,37 @@ public class GitMemoizer implements Memoizer {
 
     private Logger logger;
     private Map<CacheKey, Object> cache;
-    private RepositoryFacade repo;
+    private Map<String, String> sourceFiles;
 
-    public GitMemoizer(String repoPath) throws IOException {
+    public GitMemoizer(String repoPath) throws Exception {
         logger = Logger.getLogger(this.getClass());
         cache = new HashMap<CacheKey, Object>();
-        repo = new RepositoryFacade(repoPath);
 
-        // TODO: when object is destroyed, call: repo.close();
+        // TODO: user warning logic
+
+        GitFacade repo = new GitFacade(repoPath);
+        sourceFiles = repo.getSourceFiles();
+
+
+        // TODO: remove
+        for (String className : sourceFiles.keySet()) {
+            System.out.println(className);
+        }
+    }
+
+    public String getMethodSource(Method targetMethod) throws Exception {
+        Class targetClass = targetMethod.getDeclaringClass();
+
+        // TODO: what's diff between getName and getCanonicalName
+        String classSource = sourceFiles.get(targetClass.getCanonicalName());
+        return StaticAnalysisUtils.extractMethodDefinition(targetMethod, classSource);
     }
 
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Method targetMethod = JoinPointUtils.getMethod(joinPoint);
         List<Object> methodArgs = Arrays.asList(joinPoint.getArgs());
-        Class targetClass = targetMethod.getDeclaringClass();
-
-        String classSource = repo.getFileAsString(targetClass.getSimpleName() + ".java");
-
-        // TODO: extract method source
-        String methodSource = classSource;
+        String methodSource = getMethodSource(targetMethod);
 
         CacheKey key = new SourceCacheKey(targetMethod, methodArgs, methodSource);
         logger.info("KEY: " + key);

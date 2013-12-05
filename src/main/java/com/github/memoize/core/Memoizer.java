@@ -1,7 +1,6 @@
-package com.github.memoize;
+package com.github.memoize.core;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import java.io.IOException;
 
 public interface Memoizer {
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable;

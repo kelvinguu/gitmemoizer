@@ -1,4 +1,4 @@
-package com.github.memoize;
+package com.github.memoize.core;
 
 import java.lang.reflect.Method;
 import java.util.List;

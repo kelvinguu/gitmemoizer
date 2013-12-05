@@ -1,5 +1,6 @@
 package com.github.memoize;
 
+import com.github.memoize.aspect.Memoizable;
 import org.apache.log4j.Logger;
 
 public class Calculator {
