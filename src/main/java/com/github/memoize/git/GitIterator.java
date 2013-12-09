@@ -33,9 +33,13 @@ public class GitIterator implements Iterator {
         treeWalk = new TreeWalk(repo);
         treeWalk.addTree(commitTree);
         treeWalk.setRecursive(true);
-        treeWalk.setFilter(processor.getFilter());
 
-        this.processor = processor;
+        if (processor == null) {
+            this.processor = new SimpleGitProcessor(repo);
+        } else {
+            this.processor = processor;
+            treeWalk.setFilter(processor.getFilter());
+        }
 
         // TODO: does this make us miss the first item?
         update();
@@ -74,6 +78,6 @@ public class GitIterator implements Iterator {
     }
 
     public void remove() {
-        // TODO: remove does not actually work!
+        // remove does not do anything
     }
 }

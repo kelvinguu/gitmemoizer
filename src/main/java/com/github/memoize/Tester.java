@@ -7,7 +7,11 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 public class Tester {
 
@@ -21,9 +25,11 @@ public class Tester {
         //Method targetMethod = targetMethods[0];
         //StaticAnalysisUtils.extractMethodDefinition(targetMethod, "hello");
 
-        String repoPath = "/Users/Kelvin/Dropbox/projects/memoize/code/.git";
-        GitFacade git = new GitFacade(repoPath);
-        git.getSourceFiles();
+
+
+        //String repoPath = "/Users/Kelvin/Dropbox/projects/memoize/code/.git";
+        //GitFacade git = new GitFacade(repoPath);
+        //git.getSourceFiles();
 
         Calculator calc = new Calculator();
 

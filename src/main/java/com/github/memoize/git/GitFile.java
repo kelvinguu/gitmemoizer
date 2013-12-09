@@ -9,16 +9,16 @@ import java.io.File;
  */
 public class GitFile {
 
-    private String filePath;
+    private String gitFilePath;
     private String content;
 
-    public GitFile(String filePath, String content) {
-        this.filePath = filePath;
+    public GitFile(String gitFilePath, String content) {
+        this.gitFilePath = gitFilePath;
         this.content = content;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getGitFilePath() {
+        return gitFilePath;
     }
 
     public String getContent() {
@@ -26,7 +26,7 @@ public class GitFile {
     }
 
     public String getClassName() {
-        String fileName = new File(filePath).getName();
+        String fileName = new File(gitFilePath).getName();
         int extStart = fileName.lastIndexOf('.');
         return fileName.substring(0, extStart);
     }

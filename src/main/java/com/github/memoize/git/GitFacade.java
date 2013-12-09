@@ -28,6 +28,7 @@ public class GitFacade {
     public GitFacade(String repoPath) throws IOException {
         FileRepositoryBuilder repoBuilder = new FileRepositoryBuilder();
         repoBuilder.setGitDir(new File(repoPath));
+        repoBuilder.readEnvironment().findGitDir();
         repo = repoBuilder.build();
         commitId = repo.resolve(Constants.HEAD);
     }

@@ -25,12 +25,6 @@ public class GitMemoizer implements Memoizer {
 
         GitFacade repo = new GitFacade(repoPath);
         sourceFiles = repo.getSourceFiles();
-
-
-        // TODO: remove
-        for (String className : sourceFiles.keySet()) {
-            System.out.println(className);
-        }
     }
 
     public String getMethodSource(Method targetMethod) throws Exception {

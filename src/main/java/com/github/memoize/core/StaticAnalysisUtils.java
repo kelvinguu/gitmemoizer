@@ -16,10 +16,9 @@ public class StaticAnalysisUtils {
     }
 
     public static String extractPackage(String source) {
-        // TODO: actually extract package
         String[] lines = source.split("\n");
         for (String line : lines) {
-            // TODO: this does not match
+            // TODO: this does not necessarily match all valid pkg statements
             if (line.matches("^package \\S+;$")) {
                 return line.substring(0,line.length()-1).split(" ")[1];
             }

@@ -25,17 +25,15 @@ public class SimpleGitProcessor implements GitProcessor {
     }
 
     @Override
-    public Object process(TreeWalk treeWalk) throws IOException {
-        String filePath = treeWalk.getPathString();
+    public GitFile process(TreeWalk treeWalk) throws IOException {
+        String gitFilePath = treeWalk.getPathString();
         // TODO: why does ObjectId have an index argument?
         ObjectId fileId = treeWalk.getObjectId(0);
         String content = getFileContent(fileId);
-
-        return new GitFile(filePath, content);
+        return new GitFile(gitFilePath, content);
     }
 
     private String getFileContent(ObjectId fileId) throws IOException {
-        // TODO: actually return a string
         ObjectLoader loader = repo.open(fileId);
         return new String(loader.getBytes());
     }
