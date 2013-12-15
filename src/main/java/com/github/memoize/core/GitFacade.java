@@ -19,10 +19,10 @@ public class GitFacade {
         FileRepositoryBuilder repoBuilder = new FileRepositoryBuilder();
         repoBuilder.setGitDir(repoPath);
         repoBuilder.readEnvironment().findGitDir();
-        Repository repo = repoBuilder.build();
+        repo = repoBuilder.build();
     }
 
     public String getCommitSHA(String revisionStr) throws IOException {
-        return repo.resolve(revisionStr).toString();
+        return repo.resolve(revisionStr).getName();
     }
 }

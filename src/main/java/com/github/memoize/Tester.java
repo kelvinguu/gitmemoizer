@@ -5,13 +5,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 public class Tester {
 
     private static Logger logger = Logger.getLogger(Tester.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.DEBUG);
 
