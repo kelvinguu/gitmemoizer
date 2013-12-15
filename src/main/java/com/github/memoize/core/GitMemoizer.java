@@ -1,5 +1,6 @@
 package com.github.memoize.core;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.memoize.aspect.JoinPointUtils;
-import com.github.memoize.git.GitFacade;
+import com.kelvingu.giterable.Giterable;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -15,7 +16,7 @@ public class GitMemoizer implements Memoizer {
 
     private Logger logger;
     private Map<CacheKey, Object> cache;
-    private Map<String, String> sourceFiles;
+    private Map<String, String> methodSources;
 
     public GitMemoizer(String repoPath) throws Exception {
         logger = Logger.getLogger(this.getClass());
@@ -23,16 +24,13 @@ public class GitMemoizer implements Memoizer {
 
         // TODO: user warning logic
 
-        GitFacade repo = new GitFacade(repoPath);
-        sourceFiles = repo.getSourceFiles();
+
+        methodSources = getMethodSources(repoPath);
     }
 
-    public String getMethodSource(Method targetMethod) throws Exception {
-        Class targetClass = targetMethod.getDeclaringClass();
-
-        // TODO: what's diff between getName and getCanonicalName
-        String classSource = sourceFiles.get(targetClass.getCanonicalName());
-        return StaticAnalysisUtils.extractMethodDefinition(targetMethod, classSource);
+    public Map<String,String> getMethodSources(String repoPath) throws Exception {
+        // TODO: fill this in
+        return null;
     }
 
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {

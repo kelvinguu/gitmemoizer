@@ -27,16 +27,11 @@ public class Tester {
 
 
 
-        //String repoPath = "/Users/Kelvin/Dropbox/projects/memoize/code/.git";
-        //GitFacade git = new GitFacade(repoPath);
-        //git.getSourceFiles();
 
-        Calculator calc = new Calculator();
 
-        // result will be calculated and stored in cache
-        logger.debug("First result: " + calc.sum(1, 2));
 
-        // result will be retrieved from cache
-        logger.debug("Second result: " + calc.sum(1, 2));
+        //Calculator calc = new Calculator();
+        //logger.debug("First result: " + calc.sum(1, 2));
+        //logger.debug("Second result: " + calc.sum(1, 2));
     }
 }
