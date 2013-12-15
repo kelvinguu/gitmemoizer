@@ -24,10 +24,10 @@ public class GitMemoizer implements Memoizer {
         logger = Logger.getLogger(this.getClass());
         cache = new HashMap<CacheKey, Object>();
 
+        // TODO: handle absence of repo
         GitFacade git = new GitFacade(repoPath);
         commitSHA = git.getCommitSHA("HEAD");
 
-        //  prompt the user to enter their name
         System.out.println("Detected repository at:");
         System.out.println(repoPath);
 
@@ -36,17 +36,31 @@ public class GitMemoizer implements Memoizer {
         System.out.flush();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String response = null;
 
-        try {
-            response = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error trying to read your response!");
-            System.exit(1);
+        while (true) {
+            String response = br.readLine();
+            boolean proceed = true;
+
+            switch (response.toLowerCase()) {
+                case "y":
+                    System.out.println("Good. Proceeding with execution.");
+                    break;
+                case "n":
+                    System.out.println("Commit your code before proceeding. Execution canceled.");
+                    System.exit(1);
+                    // TODO: this leaves a nasty error message
+                    break;
+                default:
+                    System.out.println("Invalid input. Must be 'y' or 'n'. Try again.");
+                    proceed = false;
+                    break;
+            }
+
+            if (proceed) {
+                break;
+            }
         }
 
-        // TODO: format response
-        System.out.println(response);
     }
 
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {
