@@ -37,7 +37,9 @@ public class GitMemoizer implements Memoizer {
 
         Method targetMethod = JoinPointUtils.getMethod(joinPoint);
         List<Object> methodArgs = Arrays.asList(joinPoint.getArgs());
-        String methodSource = getMethodSource(targetMethod);
+
+        // TODO: fill this in
+        String methodSource = null;
 
         CacheKey key = new SourceCacheKey(targetMethod, methodArgs, methodSource);
         logger.info("KEY: " + key);

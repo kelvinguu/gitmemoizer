@@ -2,7 +2,6 @@ package com.github.memoize;
 
 import com.github.memoize.core.GitMemoizer;
 import com.github.memoize.core.StaticAnalysisUtils;
-import com.github.memoize.git.GitFacade;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
@@ -24,11 +23,6 @@ public class Tester {
         //Method[] targetMethods = GitMemoizer.class.getMethods();
         //Method targetMethod = targetMethods[0];
         //StaticAnalysisUtils.extractMethodDefinition(targetMethod, "hello");
-
-
-
-
-
 
         //Calculator calc = new Calculator();
         //logger.debug("First result: " + calc.sum(1, 2));
