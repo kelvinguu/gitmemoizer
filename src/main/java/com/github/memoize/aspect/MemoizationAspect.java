@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+import java.io.File;
 import java.io.IOException;
 
 @Aspect
@@ -17,7 +18,7 @@ public class MemoizationAspect {
         // TODO: look in JSON-based config file to get user-selected
         // implementation of Memoizer and any String arguments to pass to the
         // Memoizer's constructor
-        String repoPath = "/Users/Kelvin/Dropbox/projects/memoize/code/.git";
+        File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
         memoizer = new GitMemoizer(repoPath);
 
     }

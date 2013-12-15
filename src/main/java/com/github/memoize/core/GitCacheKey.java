@@ -9,16 +9,16 @@ import java.util.List;
  * Time: 11:10 PM
  */
 
-public class SourceCacheKey extends CacheKey {
+public class GitCacheKey extends CacheKey {
 
     private Method targetMethod;
     private List<Object> methodArgs;
-    private String methodSource;
+    private String commitSHA;
 
-    public SourceCacheKey(Method targetMethod, List<Object> methodArgs, String methodSource) {
+    public GitCacheKey(Method targetMethod, List<Object> methodArgs, String commitSHA) {
         this.targetMethod = targetMethod;
         this.methodArgs = methodArgs;
-        this.methodSource = methodSource;
+        this.commitSHA = commitSHA;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class SourceCacheKey extends CacheKey {
         for (Object arg : methodArgs) {
             sb.append(arg).append("\n");
         }
-        sb.append(methodSource);
+        sb.append(commitSHA);
         return sb.toString();
     }
 }
