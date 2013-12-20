@@ -12,5 +12,7 @@ import java.lang.annotation.ElementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Memoizable {
+    // TODO: right way to set default?
+    String version() default "HEAD";
 }
 
