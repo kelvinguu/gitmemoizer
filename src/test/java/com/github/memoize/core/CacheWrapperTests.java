@@ -8,9 +8,6 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
-/**
- * Created by Kelvin on 12/20/13.
- */
 public class CacheWrapperTests {
 
 

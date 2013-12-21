@@ -12,8 +12,6 @@ public class Tester {
 
     public static void main(String[] args) throws Exception {
 
-        GitMemoizer gitMemoizer = new GitMemoizer(new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git"));
-
         Calculator calc = new Calculator();
         logger.debug("First result: " + calc.sum(1, 2));
         logger.debug("Second result: " + calc.sum(1, 2));

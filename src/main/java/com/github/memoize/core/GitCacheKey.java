@@ -3,12 +3,6 @@ package com.github.memoize.core;
 import java.lang.reflect.Method;
 import java.util.List;
 
-/**
- * User: Kelvin
- * Date: 11/30/13
- * Time: 11:10 PM
- */
-
 public class GitCacheKey {
 
     private Method targetMethod;

@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 import java.io.File;
-import java.io.IOException;
 
 @Aspect
 public class MemoizationAspect {
@@ -18,12 +17,11 @@ public class MemoizationAspect {
         // implementation of Memoizer and any String arguments to pass to the
         // Memoizer's constructor
         File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
-        memoizer = new GitMemoizer(repoPath);
+        File cachePath = new File("/Users/Kelvin/Desktop/memo_cache");
+        boolean checkCommit = true;
+        memoizer = new GitMemoizer(repoPath, cachePath, checkCommit);
 
     }
-
-    //@Pointcut("execution(@Memoizable * *.*(..))")
-    //private void memoize() {}
 
     @Around("@annotation(com.github.memoize.aspect.Memoizable)")
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {

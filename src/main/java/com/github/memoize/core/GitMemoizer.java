@@ -10,8 +10,6 @@ import java.util.List;
 
 import com.github.memoize.aspect.JoinPointUtils;
 import com.github.memoize.aspect.Memoizable;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -22,18 +20,14 @@ public class GitMemoizer implements Memoizer {
     private Logger logger;
     private GitFacade git;
     private String headSHA;
-    private PersistentCache cache;
+    private EhcacheFacade cache;
 
-    public GitMemoizer(File repoPath, boolean checkCommit) throws Exception {
+    public GitMemoizer(File repoPath, File cachePath, boolean checkCommit) throws Exception {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.DEBUG);
         logger = Logger.getLogger(this.getClass());
 
-        // initialize cache
-        CacheManager cacheManager = CacheManager.create();
-        cacheManager.addCache("memoCache");
-        Ehcache ehcache = cacheManager.getCache("memoCache");
-        cache = new PersistentCache(ehcache);
+        cache = new EhcacheFacade(cachePath);
 
         // TODO: handle absence of repo
         git = new GitFacade(repoPath);
@@ -45,9 +39,7 @@ public class GitMemoizer implements Memoizer {
         }
     }
 
-    public GitMemoizer(File repoPath) throws Exception {
-        this(repoPath, true);
-    }
+    // TODO: enable default options
 
     private void commitCheck() throws IOException {
         System.out.println("HEAD is at: " + headSHA);

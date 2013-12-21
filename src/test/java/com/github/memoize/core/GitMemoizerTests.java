@@ -1,7 +1,6 @@
 package com.github.memoize.core;
 
 import com.github.memoize.aspect.Memoizable;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.Rule;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.lang.Math;
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class GitMemoizerTests {
@@ -28,8 +26,9 @@ public class GitMemoizerTests {
         @Override
         protected void before() throws Throwable {
             File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
+            File cachePath = new File("/Users/Kelvin/Desktop/memo_cache");
             boolean checkCommit = false;
-            gitMemoizer = new GitMemoizer(repoPath, checkCommit);
+            gitMemoizer = new GitMemoizer(repoPath, cachePath, checkCommit);
         }
 
     };

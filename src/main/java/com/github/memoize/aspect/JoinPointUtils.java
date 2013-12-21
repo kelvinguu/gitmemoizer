@@ -18,7 +18,6 @@ public class JoinPointUtils {
     }
 
     public static Method getMethod(ProceedingJoinPoint joinPoint) {
-        // http://stackoverflow.com/questions/5714411/getting-the-java-lang-reflect-method-from-a-proceedingjoinpoint
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getMethod();
     }
