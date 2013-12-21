@@ -23,6 +23,7 @@
     <orderEntry type="library" name="slf4j-api-1.6.6" level="project" />
     <orderEntry type="library" name="slf4j-jdk14-1.6.6" level="project" />
     <orderEntry type="library" name="kryo-2.22-all" level="project" />
+    <orderEntry type="library" name="je-5.0.97" level="project" />
   </component>
 </module>
 
