@@ -11,8 +11,8 @@ public class Tester {
     private static Logger logger = Logger.getLogger(Tester.class);
 
     public static void main(String[] args) throws Exception {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+
+        GitMemoizer gitMemoizer = new GitMemoizer(new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git"));
 
         Calculator calc = new Calculator();
         logger.debug("First result: " + calc.sum(1, 2));
