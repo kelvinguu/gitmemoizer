@@ -6,36 +6,52 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.github.memoize.aspect.JoinPointUtils;
 import com.github.memoize.aspect.Memoizable;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 public class GitMemoizer implements Memoizer {
 
     private Logger logger;
-    private Map<CacheKey, Object> cache;
     private GitFacade git;
     private String headSHA;
+    private PersistentCache cache;
 
-    public GitMemoizer(File repoPath) throws Exception {
+    public GitMemoizer(File repoPath, boolean checkCommit) throws Exception {
+        BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.DEBUG);
         logger = Logger.getLogger(this.getClass());
-        cache = new HashMap<CacheKey, Object>();
+
+        // initialize cache
+        CacheManager cacheManager = CacheManager.create();
+        cacheManager.addCache("memoCache");
+        Ehcache ehcache = cacheManager.getCache("memoCache");
+        cache = new PersistentCache(ehcache);
 
         // TODO: handle absence of repo
         git = new GitFacade(repoPath);
         headSHA = git.getCommitSHA("HEAD");
+        logger.info("Detected repository at: " + repoPath);
 
-        System.out.println("Detected repository at:");
-        System.out.println(repoPath);
+        if (checkCommit) {
+            commitCheck();
+        }
+    }
 
+    public GitMemoizer(File repoPath) throws Exception {
+        this(repoPath, true);
+    }
+
+    private void commitCheck() throws IOException {
         System.out.println("HEAD is at: " + headSHA);
         System.out.println("Is the currently executing code compiled from this commit? (y/n):");
-        System.out.flush();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -62,32 +78,33 @@ public class GitMemoizer implements Memoizer {
                 break;
             }
         }
-
     }
 
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Method targetMethod = JoinPointUtils.getMethod(joinPoint);
+        boolean customCommit = false;
 
         // determine commit SHA. Defaults to HEAD.
         String commitSHA = headSHA;
-
-        // check for user overriding SHA
         String revisionStr = targetMethod.getAnnotation(Memoizable.class).version();
         if (!revisionStr.equals("HEAD")) {
-            logger.warn("Commit SHA override: " + commitSHA);
-            // TODO: give more detailed message
             commitSHA = git.getCommitSHA(revisionStr);
+            logger.warn("Using custom commit SHA: " + commitSHA);
+            customCommit = true;
         }
 
-        // TODO: what if nothing for this version is found?
-
         List<Object> methodArgs = Arrays.asList(joinPoint.getArgs());
-        CacheKey key = new GitCacheKey(targetMethod, methodArgs, commitSHA);
+        GitCacheKey key = new GitCacheKey(targetMethod, methodArgs, commitSHA);
         logger.info("KEY: " + key);
 
         Object result = cache.get(key);
+
         if (result == null) {
+            if (customCommit) {
+                logger.error("Could not find memoized result for commit SHA: " + commitSHA);
+                // TODO: error should be thrown
+            }
             result = joinPoint.proceed();
             cache.put(key, result);
             logger.info("STORED: " + result);

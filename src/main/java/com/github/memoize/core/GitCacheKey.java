@@ -9,7 +9,7 @@ import java.util.List;
  * Time: 11:10 PM
  */
 
-public class GitCacheKey extends CacheKey {
+public class GitCacheKey {
 
     private Method targetMethod;
     private List<Object> methodArgs;

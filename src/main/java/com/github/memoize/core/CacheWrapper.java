@@ -13,38 +13,39 @@ import java.io.Serializable;
 
 public class CacheWrapper implements Serializable {
 
-    private Kryo kryo;
     private Object object;
     protected boolean testTransients = true;
 
     public CacheWrapper(Object object) {
         this.object = object;
-        kryo = new Kryo();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, testTransients);
+        return HashCodeBuilder.reflectionHashCode(object, testTransients);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, testTransients);
+    public boolean equals(Object otherObject) {
+        if (!(otherObject instanceof CacheWrapper)) {
+            return false;
+        }
+
+        CacheWrapper otherWrapper = (CacheWrapper) otherObject;
+        return EqualsBuilder.reflectionEquals(object, otherWrapper.getWrappedObject(), testTransients);
     }
 
     // TODO: why readClassAndObject?
 
-    private void readObject(ObjectInputStream objectInputStream)
-            throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
         Input input = new Input(objectInputStream);
-        object = kryo.readClassAndObject(input);
+        object = new Kryo().readClassAndObject(input);
         input.close();
     }
 
-    private void writeObject(ObjectOutputStream objectOutputStream)
-            throws IOException {
+    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
         Output output = new Output(objectOutputStream);
-        kryo.writeClassAndObject(output, object);
+        new Kryo().writeClassAndObject(output, object);
         output.close();
     }
 
