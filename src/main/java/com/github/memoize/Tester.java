@@ -1,12 +1,10 @@
 package com.github.memoize;
 
 import com.github.memoize.core.GitMemoizer;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
 
 import java.io.File;
-import java.lang.reflect.Method;
+
 
 public class Tester {
 

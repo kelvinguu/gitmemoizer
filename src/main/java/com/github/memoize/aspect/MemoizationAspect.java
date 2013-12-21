@@ -5,7 +5,6 @@ import com.github.memoize.core.Memoizer;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 
 import java.io.File;
 import java.io.IOException;
