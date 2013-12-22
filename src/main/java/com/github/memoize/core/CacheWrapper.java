@@ -13,11 +13,13 @@ public class CacheWrapper implements Serializable {
     private byte[] objectByteArray;
     private transient Kryo kryo;
 
+    public CacheWrapper(byte[] objectByteArray) {
+        this.objectByteArray = objectByteArray;
+        kryoInit();
+    }
     public CacheWrapper(Object object) {
 
-        // set up Kryo to use Objenesis object initialization strategy
-        kryo = new Kryo();
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        kryoInit();
 
         // serialize
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -27,9 +29,14 @@ public class CacheWrapper implements Serializable {
         objectByteArray = stream.toByteArray();
     }
 
+    private void kryoInit() {
+        // set up Kryo to use Objenesis object initialization strategy
+        kryo = new Kryo();
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+    }
+
     // TODO: simpler way to do serialize in constructor?
     // TODO: if something else had a reference to the serialized object, it won't after reload, right?
-    // TODO: keep one Kryo instance at all times?
 
     @Override
     public boolean equals(Object object) {

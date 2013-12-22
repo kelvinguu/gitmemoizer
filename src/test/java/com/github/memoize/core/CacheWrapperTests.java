@@ -13,12 +13,11 @@ import static org.junit.Assert.*;
 
 public class CacheWrapperTests {
 
-    // initialize test objects to work with
+    // define test objects to work with
     private List<Car> cars;
     private List<CacheWrapper> wrappedCars;
 
     @Rule
-    // TODO: is this right syntax? Needs to be static?
     public ExternalResource resource = new ExternalResource() {
 
         @Override
@@ -40,6 +39,12 @@ public class CacheWrapperTests {
             for (Car car : cars) {
                 wrappedCars.add(new CacheWrapper(car));
             }
+        }
+
+        @Override
+        protected void after() {
+            cars = null;
+            wrappedCars = null;
         }
 
     };

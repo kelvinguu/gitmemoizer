@@ -1,42 +1,58 @@
 package com.github.memoize.core;
 
-
-import com.sleepycat.je.Environment;
-import com.sleepycat.je.EnvironmentConfig;
-import com.sleepycat.persist.EntityStore;
-import com.sleepycat.persist.PrimaryIndex;
-import com.sleepycat.persist.StoreConfig;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-
+import com.sleepycat.je.*;
 import java.io.File;
 
 public class BerkeleyDBFacade {
 
-    @Entity
-    private class CacheEntry {
-
-        @PrimaryKey
-        private CacheWrapper key;
-        private CacheWrapper value;
-
-        public CacheEntry(CacheWrapper key, CacheWrapper value) {
-            this.key = key;
-            this.value = value;
-
-        }
-
-    }
-
-    public BerkeleyDBFacade(File cachePath) {
+    private Database db;
+    private Environment dbEnv;
+    public BerkeleyDBFacade(File cacheDir) {
         EnvironmentConfig envConfig = new EnvironmentConfig();
         envConfig.setAllowCreate(true);
-        Environment dbEnv = new Environment(cachePath, envConfig);
-        StoreConfig stConf = new StoreConfig(); stConf.setAllowCreate(true);
-        EntityStore store = new EntityStore(dbEnv, "memoCache", stConf);
+        dbEnv = new Environment(cacheDir, envConfig);
 
+        DatabaseConfig dbconf = new DatabaseConfig();
+        dbconf.setAllowCreate(true);
+        dbconf.setSortedDuplicates(false);
+        db = dbEnv.openDatabase(null, "memoCache", dbconf);
+    }
 
-        // TODO: incomplete. Trying MapDB instead.
+    public void put(Object key, Object value) {
+        DatabaseEntry dbKey = new DatabaseEntry(objectToBytes(key));
+        DatabaseEntry dbValue = new DatabaseEntry(objectToBytes(value));
+        db.put(null, dbKey, dbValue);
+    }
+
+    public Object get(Object key) {
+        // TODO: what's searchEntry for?
+        DatabaseEntry searchEntry = new DatabaseEntry();
+        DatabaseEntry dbKey = new DatabaseEntry(objectToBytes(key));
+
+        db.get(null, dbKey, searchEntry, LockMode.DEFAULT);
+        if (searchEntry.getSize() == 0) {
+            return null;
+        }
+        return bytesToObject(searchEntry.getData());
+    }
+
+    public void close() {
+        db.close();
+        dbEnv.close();
+    }
+
+    public void delete(Object key) {
+        DatabaseEntry dbKey = new DatabaseEntry(objectToBytes(key));
+        db.delete(null, dbKey);
+    }
+
+    private byte[] objectToBytes(Object object) {
+        return new CacheWrapper(object).getObjectByteArray();
+    }
+
+    private Object bytesToObject(byte[] objectByteArray) {
+        CacheWrapper cw = new CacheWrapper(objectByteArray);
+        return cw.getWrappedObject();
     }
 
 
