@@ -1,10 +1,5 @@
 package com.github.memoize;
-
-import com.github.memoize.core.GitMemoizer;
 import org.apache.log4j.Logger;
-
-import java.io.File;
-
 
 public class Tester {
 
