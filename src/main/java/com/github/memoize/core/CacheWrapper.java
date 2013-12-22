@@ -3,58 +3,57 @@ package com.github.memoize.core;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class CacheWrapper implements Serializable {
 
-    private Object object;
-    protected boolean testTransients = true;
+    private byte[] objectByteArray;
+    private transient Kryo kryo;
 
     public CacheWrapper(Object object) {
-        this.object = object;
+
+        // set up Kryo to use Objenesis object initialization strategy
+        kryo = new Kryo();
+        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+
+        // serialize
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Output output = new Output(stream);
+        kryo.writeClassAndObject(output, object);
+        output.close();
+        objectByteArray = stream.toByteArray();
+    }
+
+    // TODO: simpler way to do serialize in constructor?
+    // TODO: if something else had a reference to the serialized object, it won't after reload, right?
+    // TODO: keep one Kryo instance at all times?
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: more elegant way to do this?
+        if (!(object instanceof CacheWrapper)) {
+            return false;
+        }
+        CacheWrapper cw = (CacheWrapper) object;
+        return Arrays.equals(objectByteArray, cw.getObjectByteArray());
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(object, testTransients);
+        return Arrays.hashCode(objectByteArray);
     }
 
-    @Override
-    public boolean equals(Object otherObject) {
-        if (!(otherObject instanceof CacheWrapper)) {
-            return false;
-        }
-
-        CacheWrapper otherWrapper = (CacheWrapper) otherObject;
-        return EqualsBuilder.reflectionEquals(object, otherWrapper.getWrappedObject(), testTransients);
-    }
-
-    // TODO: why readClassAndObject?
-
-    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
-        Input input = new Input(objectInputStream);
-        object = new Kryo().readClassAndObject(input);
-        input.close();
-    }
-
-    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
-        Output output = new Output(objectOutputStream);
-        new Kryo().writeClassAndObject(output, object);
-        output.close();
-    }
-
-    public byte[] toByteArray() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Output output = new Output(stream);
-        new Kryo().writeObject(output, object);
-        output.close();
-        return stream.toByteArray();
+    public byte[] getObjectByteArray() {
+        return objectByteArray;
     }
 
     public Object getWrappedObject() {
+        Input input = new Input(new ByteArrayInputStream(objectByteArray));
+        Object object = kryo.readClassAndObject(input);
+        input.close();
         return object;
     }
 
