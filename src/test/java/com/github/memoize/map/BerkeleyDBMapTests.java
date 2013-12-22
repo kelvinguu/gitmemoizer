@@ -2,7 +2,6 @@ package com.github.memoize.map;
 
 import com.github.memoize.core.Car;
 import com.github.memoize.core.Wheel;
-import com.github.memoize.map.BerkeleyDBMap;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,8 +68,23 @@ public class BerkeleyDBMapTests {
     }
 
     @Test
-    public void testPersistence() {
-        fail("TODO");
+    public void testPersistence() throws IOException {
+        File persistDir = Files.createTempDirectory("persistDir").toFile();
+        BerkeleyDBMap origDB = new BerkeleyDBMap(persistDir);
+        origDB.put("key", "value");
+        origDB.close();
+
+        BerkeleyDBMap reviveDB = new BerkeleyDBMap(persistDir);
+        Object value = reviveDB.get("key");
+        reviveDB.close();
+
+        try {
+            FileUtils.deleteDirectory(persistDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals("reloaded database should still have original entry.", "value", value);
     }
 
     @Test
