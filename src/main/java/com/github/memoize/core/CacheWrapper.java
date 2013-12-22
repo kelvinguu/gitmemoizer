@@ -6,10 +6,7 @@ import com.esotericsoftware.kryo.io.Output;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 
 public class CacheWrapper implements Serializable {
 
@@ -47,6 +44,14 @@ public class CacheWrapper implements Serializable {
         Output output = new Output(objectOutputStream);
         new Kryo().writeClassAndObject(output, object);
         output.close();
+    }
+
+    public byte[] toByteArray() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Output output = new Output(stream);
+        new Kryo().writeObject(output, object);
+        output.close();
+        return stream.toByteArray();
     }
 
     public Object getWrappedObject() {
