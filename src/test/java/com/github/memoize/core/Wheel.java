@@ -5,11 +5,6 @@ public class Wheel {
     private Object parent;
     private String brand;
 
-    //public Wheel() {
-    //    parent = null;
-    //    brand = null;
-    //}
-
     public Wheel(Object parent, String brand) {
         this.parent = parent;
         this.brand = brand;

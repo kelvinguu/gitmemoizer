@@ -5,19 +5,17 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class CacheWrapperTests {
 
     // initialize test objects to work with
-    private Car car1;
-    private Car car2;
-    private Car car3;
-    private CacheWrapper cw1;
-    private CacheWrapper cw2;
-    private CacheWrapper cw3;
+    private List<Car> cars;
+    private List<CacheWrapper> wrappedCars;
 
     @Rule
     // TODO: is this right syntax? Needs to be static?
@@ -26,23 +24,22 @@ public class CacheWrapperTests {
         @Override
         protected void before() throws Throwable {
 
-            // car1 and car2 are the same
-            car1 = new Car();
-            car1.add(new Wheel(car1, "Firestone"));
-            car1.add(new Wheel(car1, "Bridgestone"));
+            cars = new ArrayList<Car>();
+            for (int k = 0; k < 3; k++) {
+                Car car = new Car();
+                car.add(new Wheel(car, "Bridgestone"));
+                cars.add(car);
+            }
 
-            car2 = new Car();
-            car2.add(new Wheel(car2, "Firestone"));
-            car2.add(new Wheel(car2, "Bridgestone"));
+            // car0 and car1 are the same
+            // car2 is different. It has an extra wheel.
+            cars.get(2).add(new Wheel(cars.get(2), "Michelin"));
 
-            // car3 is different
-            car3 = new Car();
-            car3.add(new Wheel(car3, "Michelin"));
-            car3.add(new Wheel(car3, "Bridgestone"));
-
-            cw1 = new CacheWrapper(car1);
-            cw2 = new CacheWrapper(car2);
-            cw3 = new CacheWrapper(car3);
+            // wrap the cars
+            wrappedCars = new ArrayList<CacheWrapper>();
+            for (Car car : cars) {
+                wrappedCars.add(new CacheWrapper(car));
+            }
         }
 
     };
@@ -50,12 +47,13 @@ public class CacheWrapperTests {
     @Test
     public void testByteArrayAsID() throws IOException {
 
-        byte[] car1Bytes = cw1.getObjectByteArray();
-        byte[] car2Bytes = cw2.getObjectByteArray();
-        byte[] car3Bytes = cw3.getObjectByteArray();
+        List<byte[]> carBytes = new ArrayList<byte[]>();
+        for (CacheWrapper cw : wrappedCars) {
+            carBytes.add(cw.getObjectByteArray());
+        }
 
-        boolean sameBytes = Arrays.equals(car1Bytes,car2Bytes);
-        boolean diffBytes = Arrays.equals(car1Bytes,car3Bytes);
+        boolean sameBytes = Arrays.equals(carBytes.get(0), carBytes.get(1));
+        boolean diffBytes = Arrays.equals(carBytes.get(0), carBytes.get(2));
 
         assertTrue("Semantically equal objects should be serialized same", sameBytes);
         assertFalse("Semantically different objects should be serialized different", diffBytes);
@@ -63,33 +61,38 @@ public class CacheWrapperTests {
 
     @Test
     public void testEquals() throws NoSuchMethodException {
-        assertEquals("two CacheWrappers with semantically same objects should equal", cw1, cw2);
-        assertNotSame("two CacheWrappers with semantically different objects should not equal", cw1, cw3);
+        assertEquals("two CacheWrappers with semantically same objects should equal",
+                wrappedCars.get(0), wrappedCars.get(1));
+        assertNotSame("two CacheWrappers with semantically different objects should not equal",
+                wrappedCars.get(0), wrappedCars.get(2));
     }
 
     @Test
     public void testSerialization() throws IOException, ClassNotFoundException {
 
+        CacheWrapper cw = wrappedCars.get(0);
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream objectOut = new ObjectOutputStream(byteOut);
 
         // serialize
-        objectOut.writeObject(cw1);
+        objectOut.writeObject(cw);
         objectOut.close();
         byte[] serialized = byteOut.toByteArray();
 
         // deserialize
         ByteArrayInputStream byteIn = new ByteArrayInputStream(serialized);
         ObjectInputStream objectIn = new ObjectInputStream(byteIn);
-        CacheWrapper cw1Reloaded = (CacheWrapper) objectIn.readObject();
+        CacheWrapper cwReload = (CacheWrapper) objectIn.readObject();
         objectIn.close();
 
-        assertEquals("Objects should be equal after saving and reloading", cw1, cw1Reloaded);
+        assertEquals("Objects should be equal after saving and reloading", cw, cwReload);
     }
 
     @Test
     public void testGetWrappedObject() {
-        Car car1Unwrapped = (Car) cw1.getWrappedObject();
-        assertEquals("Object should be same after unwrapping", car1.toString(), car1Unwrapped.toString());
+        CacheWrapper cw = wrappedCars.get(0);
+        Car car = (Car) cw.getWrappedObject();
+        Car carUnwrapped = (Car) cw.getWrappedObject();
+        assertEquals("Object should be same after unwrapping", car, carUnwrapped);
     }
 }

@@ -23,4 +23,9 @@ public class Car {
         }
         return sb.toString();
     }
+
+    public boolean equals(Object object) {
+        // TODO: this equals method is weak
+        return toString().equals(object.toString());
+    }
 }
