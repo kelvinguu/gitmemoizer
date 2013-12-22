@@ -20,12 +20,10 @@ public class MemoizationAspect {
         // Memoizer's constructor
         File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
         File mapDir = new File("/Users/Kelvin/Desktop/memo_cache");
-
         Map cache = new BerkeleyDBMap(mapDir);
 
         boolean checkCommit = true;
         memoizer = new GitMemoizer(repoPath, cache, checkCommit);
-
     }
 
     @Around("@annotation(com.github.memoize.aspect.Memoizable)")

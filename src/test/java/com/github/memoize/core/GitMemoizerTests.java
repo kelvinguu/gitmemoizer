@@ -10,6 +10,8 @@ import java.io.File;
 
 import java.lang.Math;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -28,7 +30,8 @@ public class GitMemoizerTests {
             File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
             File cachePath = new File("/Users/Kelvin/Desktop/memo_cache");
             boolean checkCommit = false;
-            gitMemoizer = new GitMemoizer(repoPath, cachePath, checkCommit);
+            Map<Object, Object> cache = new HashMap<Object, Object>();
+            gitMemoizer = new GitMemoizer(repoPath, cache, checkCommit);
         }
 
     };
