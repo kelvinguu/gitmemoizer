@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.github.memoize.aspect.JoinPointUtils;
 import com.github.memoize.aspect.Memoizable;
@@ -20,14 +21,14 @@ public class GitMemoizer implements Memoizer {
     private Logger logger;
     private GitFacade git;
     private String headSHA;
-    private EhcacheFacade cache;
+    private Map cache;
 
-    public GitMemoizer(File repoPath, File cachePath, boolean checkCommit) throws Exception {
+    public GitMemoizer(File repoPath, Map cache, boolean checkCommit) throws Exception {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.DEBUG);
         logger = Logger.getLogger(this.getClass());
 
-        cache = new EhcacheFacade(cachePath);
+        this.cache = cache;
 
         // TODO: handle absence of repo
         git = new GitFacade(repoPath);
