@@ -1,5 +1,8 @@
-package com.github.memoize.core;
+package com.github.memoize.map;
 
+import com.github.memoize.core.Car;
+import com.github.memoize.core.Wheel;
+import com.github.memoize.map.BerkeleyDBMap;
 import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,27 +13,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class BerkeleyDBFacadeTests {
+public class BerkeleyDBMapTests {
 
     // define test objects to work with
-    private BerkeleyDBFacade bdb;
-    private File cacheDir;
+    private BerkeleyDBMap bdb;
+    private File mapDir;
 
     @Rule
     public ExternalResource resource = new ExternalResource() {
 
         @Override
         protected void before() throws Throwable {
-            cacheDir = Files.createTempDirectory("cacheDir").toFile();
-            bdb = new BerkeleyDBFacade(cacheDir);
+            mapDir = Files.createTempDirectory("mapDir").toFile();
+            bdb = new BerkeleyDBMap(mapDir);
         }
 
         @Override
         protected void after() {
             bdb.close();
             try {
-                FileUtils.deleteDirectory(cacheDir);
+                FileUtils.deleteDirectory(mapDir);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -57,5 +61,20 @@ public class BerkeleyDBFacadeTests {
     public void testBadGet() {
         Object returnCar = bdb.get("nonexistent");
         assertEquals("database should return null", null, returnCar);
+    }
+
+    @Test
+    public void testPutReturn() {
+        fail("TODO");
+    }
+
+    @Test
+    public void testPersistence() {
+        fail("TODO");
+    }
+
+    @Test
+    public void testCreateDirectory() {
+        fail("TODO");
     }
 }
