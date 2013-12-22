@@ -7,11 +7,6 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * User: Kelvin
- * Date: 12/14/13
- * Time: 11:10 PM
- */
 public class GitFacade {
     private Repository repo;
 
