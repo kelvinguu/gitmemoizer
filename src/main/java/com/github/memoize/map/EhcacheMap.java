@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class EhcacheMap implements Map {
+public class EhcacheMap implements Map<Object,Object> {
 
     Ehcache cache;
 
@@ -97,7 +97,7 @@ public class EhcacheMap implements Map {
     }
 
     @Override
-    public Set<Entry> entrySet() {
+    public Set<Entry<Object, Object>> entrySet() {
         return null;
     }
 }

@@ -7,12 +7,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class BerkeleyDBMap implements Map {
+public class BerkeleyDBMap implements Map<Object,Object> {
 
     private Database db;
     private Environment dbEnv;
 
     public BerkeleyDBMap(File mapDir) {
+        // mapDir is a folder that should ONLY contain the database files
         // Create mapDir if it doesn't exist
         mapDir.mkdirs();
 
@@ -55,6 +56,11 @@ public class BerkeleyDBMap implements Map {
     }
 
     @Override
+    public void finalize() {
+        close();
+    }
+
+    @Override
     public Object remove(Object key) {
         DatabaseEntry dbKey = new DatabaseEntry(objectToBytes(key));
         Object previousValue = get(key);
@@ -94,7 +100,7 @@ public class BerkeleyDBMap implements Map {
     }
 
     @Override
-    public Set<Entry> entrySet() {
+    public Set<Entry<Object, Object>> entrySet() {
         return null;
     }
 
