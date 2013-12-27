@@ -1,6 +1,5 @@
 package com.github.memoize.core;
 
-import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
