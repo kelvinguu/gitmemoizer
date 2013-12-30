@@ -1,5 +1,3 @@
 #!/bin/bash
-
 ant
-java -javaagent:lib/aspectjweaver.jar
-     -classpath ".:lib/memoize.jar" Tester
+java -javaagent:lib/aspectjweaver.jar -classpath "bin:lib/*" Tester
