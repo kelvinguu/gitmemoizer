@@ -1,0 +1,9 @@
+<aspectj>
+
+    <aspects>
+        <!-- declare two existing aspects to the weaver -->
+        <aspect name="com.github.memoize.aspect.MemoizationAspect"/>
+    </aspects>
+
+    <weaver options="-verbose"/>
+</aspectj>

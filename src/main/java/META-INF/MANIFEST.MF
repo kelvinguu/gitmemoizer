@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: kryo-2.22-all.jar org.eclipse.jgit-3.1.0.201310021548-r.ja
+ r mockito-all-1.9.5.jar log4j-1.2.17.jar aspectjrt.jar commons-io-2.4
+ .jar je-5.0.97.jar junit-4.10.jar
+Main-Class: 
+
