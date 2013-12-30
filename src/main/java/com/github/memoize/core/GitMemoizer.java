@@ -11,8 +11,6 @@ import java.util.Map;
 
 import com.github.memoize.aspect.JoinPointUtils;
 import com.github.memoize.aspect.Memoizable;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -24,8 +22,7 @@ public class GitMemoizer implements Memoizer {
     private Map cache;
 
     public GitMemoizer(File repoPath, Map cache, boolean checkCommit) throws Exception {
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+
         logger = Logger.getLogger(this.getClass());
 
         this.cache = cache;
