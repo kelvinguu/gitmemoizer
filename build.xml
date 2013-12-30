@@ -5,8 +5,8 @@
     <property name="src.dir"     value="src"/>
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="jar.dir"     value="${build.dir}/jar"/>
-    <property name="main-class"  value="com.github.memoize.Tester"/>
+    <property name="jar.dir"     value="${build.dir}/memoize.jar"/>
+    <property name="main-class"  value="com.github.memoize.DirectTester"/>
     <property name="lib.dir"     value="lib"/>
 
     <path id="classpath">
@@ -66,7 +66,9 @@
     </target>
 
     <target name="aj-compile" depends="aj-init">
-        <iajc destdir="${classes.dir}" source="1.7" target="1.7">
+        <!-- UNCOMMENT THIS TO PRODUCE CLASS FILES RATHER THAN JAR -->
+        <!-- <iajc destdir="${classes.dir}" source="1.7" target="1.7"> -->
+        <iajc outjar="${jar.dir}" source="1.7" target="1.7">
             <src location="${src.dir}" />
             <classpath refid="classpath" />
         </iajc>
