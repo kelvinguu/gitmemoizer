@@ -1,8 +1,13 @@
 package com.github.memoize.map;
 
 import com.github.memoize.core.CacheWrapper;
+import com.github.memoize.core.GitCacheKey;
 import com.sleepycat.je.*;
+import org.apache.log4j.Logger;
+
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -11,8 +16,11 @@ public class BerkeleyDBMap implements Map<Object,Object> {
 
     private Database db;
     private Environment dbEnv;
+    private Logger logger;
 
     public BerkeleyDBMap(File mapDir) {
+        logger = Logger.getLogger(BerkeleyDBMap.class);
+
         // mapDir is a folder that should ONLY contain the database files
         // Create mapDir if it doesn't exist
         mapDir.mkdirs();
@@ -39,7 +47,21 @@ public class BerkeleyDBMap implements Map<Object,Object> {
 
     @Override
     public Object get(Object key) {
-        // TODO: what's searchEntry for?
+
+        // print method bytes
+        if (key instanceof GitCacheKey) {
+            try {
+                GitCacheKey gcKey = (GitCacheKey) key;
+                // use setAccessible to open private method
+                Field field = GitCacheKey.class.getDeclaredField("targetMethod");
+                field.setAccessible(true);
+                Method method = (Method) field.get(gcKey);
+                logger.debug(new CacheWrapper(method));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         DatabaseEntry searchEntry = new DatabaseEntry();
         DatabaseEntry dbKey = new DatabaseEntry(objectToBytes(key));
 
@@ -69,7 +91,8 @@ public class BerkeleyDBMap implements Map<Object,Object> {
     }
 
     private byte[] objectToBytes(Object object) {
-        return new CacheWrapper(object).getObjectByteArray();
+        CacheWrapper cw = new CacheWrapper(object);
+        return cw.getObjectByteArray();
     }
 
     private Object bytesToObject(byte[] objectByteArray) {

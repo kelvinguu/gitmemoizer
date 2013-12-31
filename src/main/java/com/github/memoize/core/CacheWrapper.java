@@ -64,4 +64,13 @@ public class CacheWrapper implements Serializable {
         return object;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : objectByteArray) {
+            sb.append(String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0'));
+        }
+        return sb.toString();
+    }
+
 }
