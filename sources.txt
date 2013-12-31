@@ -7,3 +7,9 @@ src/main/java/com/github/memoize/core/GitFacade.java
 src/main/java/com/github/memoize/core/GitMemoizer.java
 src/main/java/com/github/memoize/core/Memoizer.java
 src/main/java/com/github/memoize/map/BerkeleyDBMap.java
+src/test/java/com/github/memoize/core/CacheWrapperTests.java
+src/test/java/com/github/memoize/core/Car.java
+src/test/java/com/github/memoize/core/GitMemoizerTests.java
+src/test/java/com/github/memoize/core/Wheel.java
+src/test/java/com/github/memoize/map/BerkeleyDBMapTests.java
+src/test/java/com/github/memoize/TestRunner.java

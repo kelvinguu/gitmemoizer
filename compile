@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# WARNING: currently, source files and jar files need to be manually specified
+# WARNING: currently, jar files need to be manually specified
 # to the AspectJ Compiler (ajc)! This is hacky, and will be fixed later.
 
+find src | grep '\.java$' > sources.txt
 ajc @sources.txt \
 -outxml \
 -source 1.7 \
