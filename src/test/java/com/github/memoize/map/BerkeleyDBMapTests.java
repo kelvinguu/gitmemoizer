@@ -1,6 +1,5 @@
 package com.github.memoize.map;
 
-import com.github.memoize.core.CacheWrapper;
 import com.github.memoize.core.Car;
 import com.github.memoize.core.Wheel;
 import org.apache.commons.io.FileUtils;
@@ -10,7 +9,6 @@ import org.junit.rules.ExternalResource;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 

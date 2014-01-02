@@ -1,13 +1,10 @@
 package com.github.memoize.map;
 
 import com.github.memoize.core.CacheWrapper;
-import com.github.memoize.core.GitCacheKey;
 import com.sleepycat.je.*;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
