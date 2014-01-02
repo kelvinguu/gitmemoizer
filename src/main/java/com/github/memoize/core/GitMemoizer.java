@@ -85,6 +85,8 @@ public class GitMemoizer implements Memoizer {
         }
 
         List<Object> methodArgs = Arrays.asList(joinPoint.getArgs());
+        // if the joinPoint has no args, methodArgs is just a list with 0 elements
+
         GitCacheKey key = new GitCacheKey(targetMethod, methodArgs, commitSHA);
         logger.info("KEY: " + key);
 
