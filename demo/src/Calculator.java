@@ -8,4 +8,9 @@ public class Calculator {
         return a + b;
     }
 
+    @Memoizable
+    public String getName() {
+        return "Calculator";
+    }
+
 }
