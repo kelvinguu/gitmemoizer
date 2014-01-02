@@ -26,9 +26,9 @@ public class GitCacheKey {
         // TODO: do something that looks more like .join("\n")
         StringBuilder sb = new StringBuilder();
 
-        sb.append(methodSignature).append("\t");
+        sb.append(methodSignature).append(" | ");
         for (Object arg : methodArgs) {
-            sb.append(arg).append("\t");
+            sb.append(arg).append(" | ");
         }
         sb.append(commitSHA);
         return sb.toString();
