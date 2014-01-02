@@ -13,20 +13,29 @@ public class CacheWrapper implements Serializable {
     private byte[] objectByteArray;
     private transient Kryo kryo;
 
-    public CacheWrapper(byte[] objectByteArray) {
-        this.objectByteArray = objectByteArray;
-        kryoInit();
-    }
     public CacheWrapper(Object object) {
-
         kryoInit();
 
-        // serialize
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Output output = new Output(stream);
-        kryo.writeClassAndObject(output, object);
-        output.close();
-        objectByteArray = stream.toByteArray();
+        // this differs from just overloading the constructor
+        // because in this case, the code calling this constructor
+        // may not know that it is passing an Object that is a byte[]
+        if (object instanceof byte[]) {
+            objectByteArray = (byte[]) object;
+        } else {
+            // serialize
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Output output = new Output(stream);
+            kryo.writeClassAndObject(output, object);
+            output.close();
+            objectByteArray = stream.toByteArray();
+
+            // TODO: deal with this in better way
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void kryoInit() {
@@ -58,9 +67,18 @@ public class CacheWrapper implements Serializable {
     }
 
     public Object getWrappedObject() {
-        Input input = new Input(new ByteArrayInputStream(objectByteArray));
+        ByteArrayInputStream bytesInput = new ByteArrayInputStream(objectByteArray);
+        Input input = new Input(bytesInput);
         Object object = kryo.readClassAndObject(input);
         input.close();
+
+        // TODO: deal with this in better way
+        try {
+            bytesInput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return object;
     }
 
