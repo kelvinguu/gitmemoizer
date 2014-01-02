@@ -13,7 +13,8 @@ import com.github.memoize.aspect.JoinPointUtils;
 import com.github.memoize.aspect.MemoConfig;
 import com.github.memoize.aspect.Memoizable;
 import com.github.memoize.map.BerkeleyDBMap;
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 public class GitMemoizer implements Memoizer {
@@ -23,22 +24,36 @@ public class GitMemoizer implements Memoizer {
     private String headSHA;
     private Map cache;
 
-    public GitMemoizer(ProceedingJoinPoint joinPoint) throws IOException {
-        logger = Logger.getLogger(this.getClass());
-
+    public GitMemoizer(JoinPoint joinPoint) throws IOException {
         // load user-specified configs
         Method targetMethod = JoinPointUtils.getMethod(joinPoint);
         MemoConfig annotation = targetMethod.getAnnotation(MemoConfig.class);
         boolean checkCommit = annotation.checkCommit();
         File repoPath = new File(annotation.repoPath());
-        File mapDir = new File(annotation.mapDir());
+        File cacheDir = new File(annotation.cacheDir());
+
+        String logPathStr = annotation.logPath();
+        File logPath;
+        if (logPathStr.equals("not specified")) {
+            // by default, save log next to cacheDir
+            logPath = new File(cacheDir.getParentFile(), "memolog.txt");
+        } else {
+            logPath = new File(logPathStr);
+        }
+
+        // configure logger
+        logger = Logger.getLogger(this.getClass());
+        Layout logLayout = new SimpleLayout();
+        logger.addAppender(new FileAppender(logLayout, logPath.getCanonicalPath(), true));
 
         // TODO: handle absence of repo
         git = new GitFacade(repoPath);
         headSHA = git.getCommitSHA("HEAD");
-        cache = new BerkeleyDBMap(mapDir);
+        cache = new BerkeleyDBMap(cacheDir);
 
         logger.info("Detected repository at: " + repoPath);
+        logger.info("Using cache at: " + cacheDir);
+        logger.info("Logging at: " + logPath);
 
         if (checkCommit) {
             commitCheck();

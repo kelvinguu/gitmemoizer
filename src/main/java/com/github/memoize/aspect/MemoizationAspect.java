@@ -3,6 +3,7 @@ package com.github.memoize.aspect;
 import com.github.memoize.core.GitMemoizer;
 import com.github.memoize.core.Memoizer;
 import org.apache.log4j.Logger;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,7 +23,7 @@ public class MemoizationAspect {
     }
 
     @Before("@annotation(com.github.memoize.aspect.MemoConfig)")
-    public void configure(ProceedingJoinPoint joinPoint) throws Throwable {
+    public void configure(JoinPoint joinPoint) throws Throwable {
         memoizer = new GitMemoizer(joinPoint);
     }
 
@@ -30,8 +31,8 @@ public class MemoizationAspect {
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {
         if (memoizer == null) {
             Method targetMethod = JoinPointUtils.getMethod(joinPoint);
-            logger.warn("Memoizer has not been configured yet. No memoization applied to:"
-            + targetMethod);
+            logger.warn("Memoizer has not been configured yet. No memoization applied to: "
+                    + targetMethod);
             return joinPoint.proceed();
         }
 
