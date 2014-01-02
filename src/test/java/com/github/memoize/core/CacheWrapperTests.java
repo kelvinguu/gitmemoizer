@@ -65,6 +65,16 @@ public class CacheWrapperTests {
     }
 
     @Test
+    public void testByteArrayPreserved() {
+        byte[] byteArray = "some bytes".getBytes();
+
+        // this should hold even if an object is not explicitly declared to be a byte array
+        Object keyObj = (Object) byteArray;
+        boolean preserved = Arrays.equals(byteArray, new CacheWrapper(keyObj).getObjectByteArray());
+        assertTrue("A byte array wrapped by CacheWrapper should be the same byte array when you request CacheWrapper's byte array", preserved);
+    }
+
+    @Test
     public void testEquals() throws NoSuchMethodException {
         assertEquals("two CacheWrappers with semantically same objects should equal",
                 wrappedCars.get(0), wrappedCars.get(1));
