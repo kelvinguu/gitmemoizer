@@ -87,30 +87,6 @@ public class BerkeleyDBMapTests {
         assertEquals("reloaded database should still have original entry.", "value", value);
     }
 
-    // TODO: remove this test
-    @Test
-    public void HACK() throws IOException, ClassNotFoundException {
-        //FileInputStream fileIn = new FileInputStream("/Users/Kelvin/Desktop/keyBytes.ser");
-        //ObjectInputStream in = new ObjectInputStream(fileIn);
-        //byte[] keyBytes = (byte[]) in.readObject();
-        //in.close();
-        //fileIn.close();
-
-        byte[] keyBytes = "some bytes".getBytes();
-
-        File oldDir = new File("/Users/Kelvin/Desktop/mapDir");
-        BerkeleyDBMap oldDB = new BerkeleyDBMap(oldDir);
-
-        //oldDB.put(keyBytes, "some values");
-
-        Object value = oldDB.get(keyBytes);
-        oldDB.close();
-
-        System.out.println((String) value);
-        //assertNotNull("Value should be present", value);
-
-    }
-
     @Test
     public void testCreateDirectory() {
         fail("TODO");
