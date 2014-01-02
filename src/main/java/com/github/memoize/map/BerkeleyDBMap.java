@@ -49,28 +49,35 @@ public class BerkeleyDBMap implements Map<Object,Object> {
 
     @Override
     public Object get(Object key) {
-
-        // print method bytes
-        if (key instanceof GitCacheKey) {
-            try {
-                GitCacheKey gcKey = (GitCacheKey) key;
-                // use setAccessible to open private method
-                Field field = GitCacheKey.class.getDeclaredField("targetMethod");
-                field.setAccessible(true);
-                Method method = (Method) field.get(gcKey);
-                logger.debug(new CacheWrapper(method));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        byte[] keyBytes = objectToBytes(key);
 
         DatabaseEntry searchEntry = new DatabaseEntry();
-        DatabaseEntry dbKey = new DatabaseEntry(objectToBytes(key));
+        DatabaseEntry dbKey = new DatabaseEntry(keyBytes);
 
         db.get(null, dbKey, searchEntry, LockMode.DEFAULT);
         if (searchEntry.getSize() == 0) {
             return null;
         }
+
+        // print key bytes
+        //logger.debug("KEY BYTES:");
+        //logger.debug(new CacheWrapper(keyBytes));
+
+        // print method bytes
+        //if (key instanceof GitCacheKey) {
+        //    try {
+        //        GitCacheKey gcKey = (GitCacheKey) key;
+        //        // use setAccessible to open private method
+        //        Field field = GitCacheKey.class.getDeclaredField("targetMethod");
+        //        field.setAccessible(true);
+        //        Method method = (Method) field.get(gcKey);
+        //        logger.debug("METHOD BYTES:");
+        //        logger.debug(new CacheWrapper(method));
+        //    } catch (Exception e) {
+        //        e.printStackTrace();
+        //    }
+        //}
+
         return bytesToObject(searchEntry.getData());
     }
 
