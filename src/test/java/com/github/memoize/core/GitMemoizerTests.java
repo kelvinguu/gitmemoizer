@@ -31,25 +31,25 @@ public class GitMemoizerTests {
     private ProceedingJoinPoint joinPoint;
 
     @Rule
-    // TODO: use temporary repo here
+    // TODO: these tests have been broken
     public ExternalResource resource = new ExternalResource() {
 
         @Override
         protected void before() throws Throwable {
             // initialize GitMemoizer
-            File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
-            File cachePath = new File("/Users/Kelvin/Desktop/memo_cache");
-            boolean checkCommit = false;
-            Map<Object, Object> cache = new HashMap<Object, Object>();
-            gitMemoizer = new GitMemoizer(repoPath, cache, checkCommit);
-
-            // mock joinPoint, giving it a single method
-            MethodSignature methodSignature = mock(MethodSignature.class);
-            Method method = Foo.class.getMethod("bar", double.class, double.class);
-            when(methodSignature.getMethod()).thenReturn(method);
-
-            joinPoint = mock(ProceedingJoinPoint.class);
-            when(joinPoint.getSignature()).thenReturn(methodSignature);
+            //File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
+            //File cachePath = new File("/Users/Kelvin/Desktop/memo_cache");
+            //boolean checkCommit = false;
+            //Map<Object, Object> cache = new HashMap<Object, Object>();
+            //gitMemoizer = new GitMemoizer(repoPath, cache, checkCommit);
+            //
+            //// mock joinPoint, giving it a single method
+            //MethodSignature methodSignature = mock(MethodSignature.class);
+            //Method method = Foo.class.getMethod("bar", double.class, double.class);
+            //when(methodSignature.getMethod()).thenReturn(method);
+            //
+            //joinPoint = mock(ProceedingJoinPoint.class);
+            //when(joinPoint.getSignature()).thenReturn(methodSignature);
 
         }
 

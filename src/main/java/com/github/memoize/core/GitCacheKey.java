@@ -27,10 +27,10 @@ public class GitCacheKey {
         StringBuilder sb = new StringBuilder();
 
         sb.append(methodSignature).append(" | ");
-        for (Object arg : methodArgs) {
-            sb.append(arg).append(" | ");
-        }
         sb.append(commitSHA);
+        for (Object arg : methodArgs) {
+            sb.append(" | ").append(arg);
+        }
         return sb.toString();
     }
 }

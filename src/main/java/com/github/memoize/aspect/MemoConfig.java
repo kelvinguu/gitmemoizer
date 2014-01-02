@@ -9,7 +9,8 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface MemoConfig {
     String repoPath();
-    String mapDir();
+    String cacheDir();
+    String logPath() default "not specified";
     boolean checkCommit() default true;
 }
 
