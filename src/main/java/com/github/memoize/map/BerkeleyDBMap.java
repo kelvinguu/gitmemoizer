@@ -30,6 +30,7 @@ public class BerkeleyDBMap implements Map<Object,Object> {
         dbEnv = new Environment(mapDir, envConfig);
 
         DatabaseConfig dbconf = new DatabaseConfig();
+        dbconf.setDeferredWrite(true);
         dbconf.setAllowCreate(true);
         dbconf.setSortedDuplicates(false);
         db = dbEnv.openDatabase(null, "memoCache", dbconf);
@@ -42,6 +43,7 @@ public class BerkeleyDBMap implements Map<Object,Object> {
 
         Object previousValue = get(key);
         db.put(null, dbKey, dbValue);
+        db.sync();
         return previousValue;
     }
 
