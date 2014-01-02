@@ -1,22 +1,17 @@
 import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
+import com.github.memoize.aspect.MemoConfig;
 
 public class Demo {
 
     private static Logger logger;
 
-    @MemoizeConfig()
+    @MemoConfig(repoPath="/Users/Kelvin/Dropbox/projects/memoize/code/.git", cacheDir ="/Users/Kelvin/Desktop/memocache")
     public static void main(String[] args) throws Exception {
 
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.DEBUG);
-        logger = Logger.getLogger(Tester.class);
-
         Calculator calc = new Calculator();
-        logger.debug("First result: " + calc.sum(1, 2));
-        logger.debug("Second result: " + calc.sum(1, 2));
+        System.out.println("First result: " + calc.sum(1, 2));
+        System.out.println("Second result: " + calc.sum(1, 2));
 
-        logger.debug("Object name: " + calc.getName());
+        System.out.println("Object name: " + calc.getName());
     }
 }
