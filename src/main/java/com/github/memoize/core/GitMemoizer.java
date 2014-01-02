@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.memoize.aspect.JoinPointUtils;
+import com.github.memoize.aspect.MemoConfig;
 import com.github.memoize.aspect.Memoizable;
+import com.github.memoize.map.BerkeleyDBMap;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -21,15 +23,21 @@ public class GitMemoizer implements Memoizer {
     private String headSHA;
     private Map cache;
 
-    public GitMemoizer(File repoPath, Map cache, boolean checkCommit) throws Exception {
-
+    public GitMemoizer(ProceedingJoinPoint joinPoint) throws IOException {
         logger = Logger.getLogger(this.getClass());
 
-        this.cache = cache;
+        // load user-specified configs
+        Method targetMethod = JoinPointUtils.getMethod(joinPoint);
+        MemoConfig annotation = targetMethod.getAnnotation(MemoConfig.class);
+        boolean checkCommit = annotation.checkCommit();
+        File repoPath = new File(annotation.repoPath());
+        File mapDir = new File(annotation.mapDir());
 
         // TODO: handle absence of repo
         git = new GitFacade(repoPath);
         headSHA = git.getCommitSHA("HEAD");
+        cache = new BerkeleyDBMap(mapDir);
+
         logger.info("Detected repository at: " + repoPath);
 
         if (checkCommit) {

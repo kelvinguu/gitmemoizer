@@ -2,32 +2,39 @@ package com.github.memoize.aspect;
 
 import com.github.memoize.core.GitMemoizer;
 import com.github.memoize.core.Memoizer;
-import com.github.memoize.map.BerkeleyDBMap;
+import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 
-import java.io.File;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 @Aspect
 public class MemoizationAspect {
 
     private Memoizer memoizer;
-    public MemoizationAspect() throws Exception {
-        // TODO: look in JSON-based config file to get user-selected
-        // implementation of Memoizer and any String arguments to pass to the
-        // Memoizer's constructor
-        File repoPath = new File("/Users/Kelvin/Dropbox/projects/memoize/code/.git");
-        File mapDir = new File("/Users/Kelvin/Desktop/memo_cache");
-        Map cache = new BerkeleyDBMap(mapDir);
+    private Logger logger;
 
-        boolean checkCommit = true;
-        memoizer = new GitMemoizer(repoPath, cache, checkCommit);
+    public MemoizationAspect() throws Exception {
+        memoizer = null;
+        logger = Logger.getLogger(MemoizationAspect.class);
+    }
+
+    @Before("@annotation(com.github.memoize.aspect.MemoConfig)")
+    public void configure(ProceedingJoinPoint joinPoint) throws Throwable {
+        memoizer = new GitMemoizer(joinPoint);
     }
 
     @Around("@annotation(com.github.memoize.aspect.Memoizable)")
     public Object callWithMemoization(ProceedingJoinPoint joinPoint) throws Throwable {
+        if (memoizer == null) {
+            Method targetMethod = JoinPointUtils.getMethod(joinPoint);
+            logger.warn("Memoizer has not been configured yet. No memoization applied to:"
+            + targetMethod);
+            return joinPoint.proceed();
+        }
+
         return memoizer.callWithMemoization(joinPoint);
     }
 }
