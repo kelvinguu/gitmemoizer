@@ -1,5 +1,6 @@
 package com.github.memoize.map;
 
+import com.github.memoize.core.CacheWrapper;
 import com.github.memoize.core.Car;
 import com.github.memoize.core.Wheel;
 import org.apache.commons.io.FileUtils;
@@ -7,12 +8,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class BerkeleyDBMapTests {
 
@@ -85,6 +85,30 @@ public class BerkeleyDBMapTests {
         }
 
         assertEquals("reloaded database should still have original entry.", "value", value);
+    }
+
+    // TODO: remove this test
+    @Test
+    public void HACK() throws IOException, ClassNotFoundException {
+        //FileInputStream fileIn = new FileInputStream("/Users/Kelvin/Desktop/keyBytes.ser");
+        //ObjectInputStream in = new ObjectInputStream(fileIn);
+        //byte[] keyBytes = (byte[]) in.readObject();
+        //in.close();
+        //fileIn.close();
+
+        byte[] keyBytes = "some bytes".getBytes();
+
+        File oldDir = new File("/Users/Kelvin/Desktop/mapDir");
+        BerkeleyDBMap oldDB = new BerkeleyDBMap(oldDir);
+
+        //oldDB.put(keyBytes, "some values");
+
+        Object value = oldDB.get(keyBytes);
+        oldDB.close();
+
+        System.out.println((String) value);
+        //assertNotNull("Value should be present", value);
+
     }
 
     @Test
