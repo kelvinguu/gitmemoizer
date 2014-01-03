@@ -30,13 +30,13 @@ public class GitMemoizer implements Memoizer {
         MemoConfig annotation = targetMethod.getAnnotation(MemoConfig.class);
         boolean checkCommit = annotation.checkCommit();
         File repoPath = new File(annotation.repoPath());
-        File cacheDir = new File(annotation.cacheDir());
+        File cachePath = new File(annotation.cachePath());
 
         String logPathStr = annotation.logPath();
         File logPath;
         if (logPathStr.equals("not specified")) {
-            // by default, save log next to cacheDir
-            logPath = new File(cacheDir.getParentFile(), "memolog.txt");
+            // by default, save log next to cachePath
+            logPath = new File(cachePath.getParentFile(), "memolog.txt");
         } else {
             logPath = new File(logPathStr);
         }
@@ -49,11 +49,11 @@ public class GitMemoizer implements Memoizer {
         // TODO: handle absence of repo
         git = new GitFacade(repoPath);
         headSHA = git.getCommitSHA("HEAD");
-        cache = new BerkeleyDBMap(cacheDir);
+        cache = new BerkeleyDBMap(cachePath);
 
-        logger.info("Detected repository at: " + repoPath);
-        logger.info("Using cache at: " + cacheDir);
-        logger.info("Logging at: " + logPath);
+        logger.info("Repository: " + repoPath);
+        logger.info("Cache: " + cachePath);
+        logger.info("Log file: " + logPath);
 
         if (checkCommit) {
             commitCheck();
@@ -111,8 +111,6 @@ public class GitMemoizer implements Memoizer {
         // if the joinPoint has no args, methodArgs is just a list with 0 elements
 
         GitCacheKey key = new GitCacheKey(targetMethod, methodArgs, commitSHA);
-        logger.info("KEY: " + key);
-
         Object result = cache.get(key);
 
         if (result == null) {
@@ -122,9 +120,9 @@ public class GitMemoizer implements Memoizer {
             }
             result = joinPoint.proceed();
             cache.put(key, result);
-            logger.info("STORED: " + result);
+            logger.info("STORED: " + key);
         } else {
-            logger.info("LOADED: " + result);
+            logger.info("LOADED: " + key);
         }
 
         return result;

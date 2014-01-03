@@ -18,8 +18,8 @@ public class BerkeleyDBMap implements Map<Object,Object> {
     public BerkeleyDBMap(File mapDir) {
         logger = Logger.getLogger(BerkeleyDBMap.class);
 
-        // cacheDir is a folder that should ONLY contain the database files
-        // Create cacheDir if it doesn't exist
+        // mapDir is a folder that should ONLY contain the database files
+        // Create mapDir if it doesn't exist
         mapDir.mkdirs();
 
         EnvironmentConfig envConfig = new EnvironmentConfig();

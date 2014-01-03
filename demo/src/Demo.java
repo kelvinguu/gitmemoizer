@@ -5,7 +5,8 @@ public class Demo {
 
     private static Logger logger;
 
-    @MemoConfig(repoPath="/Users/Kelvin/Dropbox/projects/memoize/code/.git", cacheDir ="/Users/Kelvin/Desktop/memocache")
+    @MemoConfig(repoPath="/Users/Kelvin/Dropbox/projects/memoize/code/.git",
+        cachePath ="/Users/Kelvin/Desktop/memocache")
     public static void main(String[] args) throws Exception {
 
         Calculator calc = new Calculator();
