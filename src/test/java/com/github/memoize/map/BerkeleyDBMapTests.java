@@ -16,22 +16,22 @@ public class BerkeleyDBMapTests {
 
     // define test objects to work with
     private BerkeleyDBMap bdb;
-    private File cacheDir;
+    private File cachePath;
 
     @Rule
     public ExternalResource resource = new ExternalResource() {
 
         @Override
         protected void before() throws Throwable {
-            cacheDir = Files.createTempDirectory("cacheDir").toFile();
-            bdb = new BerkeleyDBMap(cacheDir);
+            cachePath = Files.createTempDirectory("cachePath").toFile();
+            bdb = new BerkeleyDBMap(cachePath);
         }
 
         @Override
         protected void after() {
             bdb.close();
             try {
-                FileUtils.deleteDirectory(cacheDir);
+                FileUtils.deleteDirectory(cachePath);
             } catch (IOException e) {
                 e.printStackTrace();
             }

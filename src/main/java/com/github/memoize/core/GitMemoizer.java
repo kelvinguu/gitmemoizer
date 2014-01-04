@@ -51,9 +51,11 @@ public class GitMemoizer implements Memoizer {
         headSHA = git.getCommitSHA("HEAD");
         cache = new BerkeleyDBMap(cachePath);
 
+        logger.info("- - - - -");
         logger.info("Repository: " + repoPath);
         logger.info("Cache: " + cachePath);
         logger.info("Log file: " + logPath);
+        logger.info("- - - - -");
 
         if (checkCommit) {
             commitCheck();
