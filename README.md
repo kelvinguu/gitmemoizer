@@ -1,6 +1,6 @@
 # GitMemoizer
 
-#### Automagically memoize any function, and save results on disk.
+#### Automagically memoize any function and save results to disk.
 
 ## Features
 1. Add the `@Memoizable` annotation above any method to make it automatically memoize results.
@@ -139,12 +139,10 @@ StackOverflow has more information on how to do this:
 Clone this repo and execute the `run` script in `demo`:
 
 ```bash
-$ git clone github.com/kelvingu/gitmemoizer
+$ git clone https://github.com/kelvingu/gitmemoizer.git
 $ cd gitmemoizer/demo
 $ ./run
 ```
-
-TODO: fix clone link
 
 (Make sure you are in the `demo` folder when you call `run`.)
 After the program executes, GitMemoizer should have created the file `demo/memolog.txt`.
