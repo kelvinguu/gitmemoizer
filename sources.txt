@@ -1,4 +1,5 @@
 src/main/java/com/github/memoize/aspect/JoinPointUtils.java
+src/main/java/com/github/memoize/aspect/MemoConfig.java
 src/main/java/com/github/memoize/aspect/Memoizable.java
 src/main/java/com/github/memoize/aspect/MemoizationAspect.java
 src/main/java/com/github/memoize/core/CacheWrapper.java
