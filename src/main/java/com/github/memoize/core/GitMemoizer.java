@@ -66,7 +66,7 @@ public class GitMemoizer implements Memoizer {
 
     private void commitCheck() throws IOException {
         System.out.println("HEAD is at: " + headSHA);
-        System.out.println("Is the currently executing code compiled from this commit? (y/n):");
+        System.out.println("All newly memoized results will be marked with this commit SHA. Continue? (y/n):");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -76,10 +76,10 @@ public class GitMemoizer implements Memoizer {
 
             switch (response.toLowerCase()) {
                 case "y":
-                    System.out.println("Good. Proceeding with execution.");
+                    System.out.println("Proceeding with execution.");
                     break;
                 case "n":
-                    System.out.println("Commit your code before proceeding. Execution canceled.");
+                    System.out.println("Execution canceled.");
                     System.exit(1);
                     // TODO: continue execution, but no memoizing
                     break;
