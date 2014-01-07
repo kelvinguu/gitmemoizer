@@ -1,0 +1,7 @@
+INFO - - - - - -
+INFO - Repository: ../.git
+INFO - Cache: memocache
+INFO - Log file: memolog.txt
+INFO - - - - - -
+INFO - STORED: public static java.lang.String Demo.exclaim(java.lang.String) | 0b834c49dee1de5c2c86d0bcda6a1b9b2f77e971 | end the war
+INFO - STORED: public static java.lang.String Demo.exclaim(java.lang.String) | 0b834c49dee1de5c2c86d0bcda6a1b9b2f77e971 | end the war
